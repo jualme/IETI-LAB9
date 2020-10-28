@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://co2app:co2app@cluster0.yrsox.mongodb.net/IETILab?retryWrites=true&w=majority

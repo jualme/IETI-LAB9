@@ -1,5 +1,6 @@
 package eci.ieti;
 
+import eci.AppConfiguration;
 import eci.ieti.data.CustomerRepository;
 import eci.ieti.data.ProductRepository;
 import eci.ieti.data.model.Customer;
@@ -9,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoOperations;
 
 @SpringBootApplication
 public class Application implements CommandLineRunner {
@@ -27,6 +31,10 @@ public class Application implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfiguration.class);
+        MongoOperations mongoOperation = (MongoOperations) applicationContext.getBean("mongoTemplate");
+
 
         customerRepository.deleteAll();
 
