@@ -66,7 +66,7 @@ Create a Spring Boot Application that connects with MongoDB.
     ````                  
     
     
-6. Create a repository Users an Todo
+6. Create a repository Users and Todo
 
 **Done**
 
@@ -77,12 +77,23 @@ Create a Spring Boot Application that connects with MongoDB.
     * Todos where the dueDate has expired
     
     ```Number of tasks expired = 5```
+    
     * Todos that are assigned to given user and have priority greater equal to 5
     
     ```Number of tasks assigned to user juan and priority > 5 = 2```
     
     * Users that have assigned more than 2 Todos.
     
-    * Todos that contains a description with a length greater than 30 characters        
+    ```Users that have assigned more than 2 Todos = 5```
+    
+    * Todos that contains a description with a length greater than 30 characters     
+    
+    ```Todos that have description grater than 30 characters = 1```   
 
 8. Implement the queries of the previous step using *derived query methods* in your repository interface. Is it possible to implement all of them?
+
+**Done**
+
+ ![](img/lab/Querries.png)
+ 
+ - the third, counting requires aggregations, therefore it cannot be done with normal queries

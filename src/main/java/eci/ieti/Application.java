@@ -5,11 +5,9 @@ import eci.ieti.data.CustomerRepository;
 import eci.ieti.data.ProductRepository;
 import eci.ieti.data.TodoRepository;
 import eci.ieti.data.UserRepository;
-import eci.ieti.data.model.Customer;
-import eci.ieti.data.model.Product;
+import eci.ieti.data.model.*;
 
-import eci.ieti.data.model.Todo;
-import eci.ieti.data.model.User;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -359,35 +357,38 @@ public class Application implements CommandLineRunner {
 
     // Todos that are assigned to given user and have priority greater equal to 5
     query = new Query();
-    query.addCriteria(Criteria.where("responsible").is("juan@mail.com").andOperator(Criteria.where("priority").gte(5)));
+    query.addCriteria(
+        Criteria.where("responsible")
+            .is("juan@mail.com")
+            .andOperator(Criteria.where("priority").gte(5)));
     List<Todo> tasksAssignedPriority = mongoOperation.find(query, Todo.class);
 
     System.out.println(
-            "Number of tasks assigned to user juan and priority > 5 = " + tasksAssignedPriority.size());
+        "Number of tasks assigned to user juan and priority > 5 = " + tasksAssignedPriority.size());
 
-    /*
     // Users that have assigned more than 2 Todos.
     Aggregation agg =
         Aggregation.newAggregation(
             Aggregation.group("responsible").count().as("count"),
-            Aggregation.match(Criteria.where("count").gt(2)),
-            Aggregation.project("_id"));
-    List<Todo> moreAssignes = mongoOperation.aggregate(agg, "todo", Todo.class).getMappedResults();
+            Aggregation.project("count").and("_id").previousOperation(),
+            Aggregation.match(Criteria.where("count").gt(2)));
+    List<TodoCount> moreAssignes =
+        mongoOperation.aggregate(agg, "todo", TodoCount.class).getMappedResults();
 
     System.out.println("Users that have assigned more than 2 Todos = " + moreAssignes.size());
-    */
+
     // Todos that contains a description with a length greater than 30 characters
     Aggregation agg2 =
         Aggregation.newAggregation(
             Aggregation.project(
                     "_id", "description", "priority", "dueDate", "responsible", "status")
-                .andExpression("strLenCP(description)")
+                .andExpression("strLenBytes(description)")
                 .as("strLength"),
             Aggregation.match(Criteria.where("strLength").gt(30)));
-    List<Todo> greaterDescription =
-        mongoOperation.aggregate(agg2, "todo", Todo.class).getMappedResults();
-
-    // Print result
-    System.out.println("Todos that have description grater than 30 characters = " + greaterDescription.size());
+    List<Document> infoDescriptionLength =
+            mongoOperation.aggregate(agg2, "todo", Document.class).getMappedResults();
+        // Print result
+    System.out.println(
+        "Todos that have description grater than 30 characters = " + infoDescriptionLength.size());
   }
 }
